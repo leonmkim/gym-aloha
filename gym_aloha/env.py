@@ -31,8 +31,16 @@ class AlohaEnv(gym.Env):
         observation_height=480,
         visualization_width=640,
         visualization_height=480,
+        cube_init_xrange=[0.0, 0.2],
+        cube_init_yrange=[0.4, 0.6],
+        cube_init_zrange=[0.05, 0.05],
     ):
         super().__init__()
+        
+        self.cube_init_xrange = cube_init_xrange
+        self.cube_init_yrange = cube_init_yrange
+        self.cube_init_zrange = cube_init_zrange
+
         self.task = task
         self.obs_type = obs_type
         self.render_mode = render_mode
@@ -157,7 +165,11 @@ class AlohaEnv(gym.Env):
 
         # TODO(rcadene): do not use global variable for this
         if self.task == "transfer_cube":
-            BOX_POSE[0] = sample_box_pose(seed)  # used in sim reset
+            BOX_POSE[0] = sample_box_pose(seed,
+                x_range=self.cube_init_xrange,
+                y_range=self.cube_init_yrange,
+                z_range=self.cube_init_zrange,
+            )  # used in sim reset
         elif self.task == "insertion":
             BOX_POSE[0] = np.concatenate(sample_insertion_pose(seed))  # used in sim reset
         else:
